@@ -17,12 +17,15 @@
             justify-content: center;
             min-height: 100vh;
             text-align: center;
+            color: #000; /* Solid black text */
+            font-weight: bold; /* Ensure bold text */
         }
 
         h1 {
             color: #333;
             font-size: 2em;
             margin-bottom: 20px;
+            font-weight: bold;
         }
 
         input[type="file"] {
@@ -63,27 +66,36 @@
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
+            opacity: 1; /* Ensure full opacity */
+            color: #000; /* Solid black text */
+            font-weight: bold;
+            line-height: 1.5;
+            word-break: break-word;
+            display: none; /* Hide content initially */
         }
 
-        #content.show {
-            opacity: 1;
+        /* Spinner Styles */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
-        #content.show {
-            animation: fadeIn 0.5s ease-in-out;
+        /* Message Styles */
+        #uploadMessage {
+            margin-top: 20px;
+            font-size: 1.2em;
+            color: green;
+            display: none;
         }
     </style>
 </head>
@@ -92,37 +104,64 @@
     <h1>Upload your HTML file</h1>
 
     <input type="file" id="htmlFile" accept=".html">
-    <button id="convert">Convert to PDF</button>
+    <div class="spinner" id="spinner" style="display: none;"></div> <!-- Loading spinner -->
+    <div id="uploadMessage">File uploaded successfully! Click "Convert" to generate PDF.</div>
+    <button id="convert" disabled>Convert to PDF</button>
 
     <div id="content"></div>
 
     <script>
-        document.getElementById('convert').addEventListener('click', function () {
+        document.getElementById('htmlFile').addEventListener('change', function () {
             var fileInput = document.getElementById('htmlFile');
+            var spinner = document.getElementById('spinner');
+            var uploadMessage = document.getElementById('uploadMessage');
+            var convertButton = document.getElementById('convert');
 
             if (fileInput.files.length === 0) {
                 alert("Please select an HTML file first.");
                 return;
             }
 
+            // Show spinner during file upload
+            spinner.style.display = 'block';
+            uploadMessage.style.display = 'none';
+            convertButton.disabled = true;
+
             var file = fileInput.files[0];
             var reader = new FileReader();
 
             reader.onload = function(event) {
+                // Hide spinner when file is uploaded
+                spinner.style.display = 'none';
+                uploadMessage.style.display = 'block';
+                convertButton.disabled = false;
+
                 var htmlContent = event.target.result;
                 var contentDiv = document.getElementById('content');
                 contentDiv.innerHTML = htmlContent;
-                contentDiv.classList.add('show');
-
-                setTimeout(() => {
-                    var element = document.getElementById('content');
-                    html2pdf().from(element).save();
-                }, 500);
             };
 
             reader.readAsText(file);
         });
+
+        document.getElementById('convert').addEventListener('click', function () {
+            var contentDiv = document.getElementById('content');
+            contentDiv.style.display = 'block'; // Show content when converting
+
+            // html2pdf options
+            var opt = {
+                margin:       0.5,
+                filename:     'converted.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            setTimeout(() => {
+                var element = document.getElementById('content');
+                html2pdf().from(element).set(opt).save();
+            }, 500);
+        });
     </script>
 </body>
 </html>
-
