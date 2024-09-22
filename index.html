@@ -109,53 +109,49 @@
     <button id="convert" disabled>Convert to PDF</button>
 
     <div id="content"></div>
-
     <script>
+        let fileName = ''; 
         document.getElementById('htmlFile').addEventListener('change', function () {
             var fileInput = document.getElementById('htmlFile');
             var spinner = document.getElementById('spinner');
             var uploadMessage = document.getElementById('uploadMessage');
             var convertButton = document.getElementById('convert');
+            var contentDiv = document.getElementById('content');
 
             if (fileInput.files.length === 0) {
                 alert("Please select an HTML file first.");
                 return;
             }
-
             spinner.style.display = 'block';
             uploadMessage.style.display = 'none';
             convertButton.disabled = true;
+            contentDiv.style.display = 'none';
 
             var file = fileInput.files[0];
+            fileName = file.name.replace('.html', ''); 
             var reader = new FileReader();
-
             reader.onload = function(event) {
                 spinner.style.display = 'none';
                 uploadMessage.style.display = 'block';
                 convertButton.disabled = false;
-
                 var htmlContent = event.target.result;
-                var contentDiv = document.getElementById('content');
                 contentDiv.innerHTML = htmlContent;
             };
-
             reader.readAsText(file);
         });
-
         document.getElementById('convert').addEventListener('click', function () {
             var contentDiv = document.getElementById('content');
-            contentDiv.style.display = 'block'; 
+            contentDiv.style.display = 'block';
             var opt = {
                 margin:       0.5,
-                filename:     'converted.pdf',
+                filename:     fileName + '.pdf', 
                 image:        { type: 'jpeg', quality: 1 },
-                html2canvas:  { scale: 2, logging: true, dpi: 192, letterRendering: true },
+                html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
             };
 
             setTimeout(() => {
-                var element = document.getElementById('content');
-                html2pdf().from(element).set(opt).save();
+                html2pdf().from(contentDiv).set(opt).save();
             }, 500);
         });
     </script>
