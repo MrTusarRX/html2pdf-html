@@ -17,15 +17,13 @@
             justify-content: center;
             min-height: 100vh;
             text-align: center;
-            color: #000; /* Solid black text */
-            font-weight: bold; /* Ensure bold text */
+            color: #000;
         }
 
         h1 {
             color: #333;
             font-size: 2em;
             margin-bottom: 20px;
-            font-weight: bold;
         }
 
         input[type="file"] {
@@ -66,15 +64,9 @@
             background-color: #fff;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            opacity: 1; 
-            color: #000; 
-            font-weight: bold;
-            line-height: 1.5;
-            word-break: break-word;
-            display: none; 
+            display: none;
         }
 
-        
         .spinner {
             border: 4px solid #f3f3f3;
             border-top: 4px solid #3498db;
@@ -90,7 +82,6 @@
             100% { transform: rotate(360deg); }
         }
 
-       
         #uploadMessage {
             margin-top: 20px;
             font-size: 1.2em;
@@ -139,12 +130,13 @@
             };
             reader.readAsText(file);
         });
+
         document.getElementById('convert').addEventListener('click', function () {
             var contentDiv = document.getElementById('content');
             contentDiv.style.display = 'block';
             var opt = {
                 margin:       0.5,
-                filename:     fileName + '.pdf', 
+                filename:     fileName + '.pdf',
                 image:        { type: 'jpeg', quality: 1 },
                 html2canvas:  { scale: 2 },
                 jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
