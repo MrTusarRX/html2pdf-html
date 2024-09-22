@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convert Uploaded HTML to PDF</title>
+    <script src="https://mrtusarrx.github.io/html2pdf-html/index.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        input[type="file"] {
+            padding: 10px;
+            font-size: 1em;
+            margin: 20px 0;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        input[type="file"]:hover {
+            border-color: #666;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        #content {
+            margin-top: 30px;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+
+        #content.show {
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #content.show {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Upload your HTML file</h1>
+
+    <input type="file" id="htmlFile" accept=".html">
+    <button id="convert">Convert to PDF</button>
+
+    <div id="content"></div>
+
+    <script>
+        document.getElementById('convert').addEventListener('click', function () {
+            var fileInput = document.getElementById('htmlFile');
+
+            if (fileInput.files.length === 0) {
+                alert("Please select an HTML file first.");
+                return;
+            }
+
+            var file = fileInput.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(event) {
+                var htmlContent = event.target.result;
+                var contentDiv = document.getElementById('content');
+                contentDiv.innerHTML = htmlContent;
+                contentDiv.classList.add('show');
+
+                setTimeout(() => {
+                    var element = document.getElementById('content');
+                    html2pdf().from(element).save();
+                }, 500);
+            };
+
+            reader.readAsText(file);
+        });
+    </script>
+</body>
+</html>
+
