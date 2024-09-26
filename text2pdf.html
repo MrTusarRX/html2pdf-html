@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Text to PDF Converter</title>
+    <script src="https://mrtusarrx.github.io/html2pdf-html/index.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            color: #000;
+        }
+        h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+        textarea {
+            width: 100%;
+            max-width: 600px;
+            height: 200px;
+            padding: 10px;
+            font-size: 1em;
+            margin: 20px 0;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            resize: none;
+            font-family: 'Courier New', Courier, monospace;
+        }
+        textarea:focus {
+            border-color: #666;
+            outline: none;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+        #content {
+            margin-top: 30px;
+            max-width: 600px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Convert HTML Text to PDF</h1>
+
+    <textarea id="htmlInput" placeholder="Paste your HTML text here"></textarea>
+    
+    <button id="convert">Convert to PDF</button>
+    
+    <div id="content"></div>
+
+    <script>
+        document.getElementById('convert').addEventListener('click', function () {
+            const htmlText = document.getElementById('htmlInput').value;
+            const contentDiv = document.getElementById('content');
+
+            if (!htmlText.trim()) {
+                alert("Please enter HTML text.");
+                return;
+            }
+
+            // Display the HTML text in the content div
+            contentDiv.innerHTML = htmlText;
+            contentDiv.style.display = 'block';
+
+            // Convert the content to PDF
+            const opt = {
+                margin:       0.5,
+                filename:     'document.pdf',
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { scale: 2 },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+
+            setTimeout(() => {
+                html2pdf().from(contentDiv).set(opt).save();
+            }, 500);
+        });
+    </script>
+    
+</body>
+</html>
