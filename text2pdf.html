@@ -85,12 +85,8 @@
                 alert("Please enter HTML text.");
                 return;
             }
-
-            // Display the HTML text in the content div
             contentDiv.innerHTML = htmlText;
             contentDiv.style.display = 'block';
-
-            // Convert the content to PDF
             const opt = {
                 margin:       0.5,
                 filename:     'document.pdf',
